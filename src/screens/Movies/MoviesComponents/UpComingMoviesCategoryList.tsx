@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { FlatList, StyleSheet, View, Dimensions } from 'react-native'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import EmptyPage from '../../../components/EmptyPage'
@@ -13,7 +13,7 @@ interface UpComingMoviesCategoryListProps {
     componentId: string
 }
 
-const WIDTH = Dimensions.get('window').width;
+const WIDTH = Dimensions.get('screen').width;
 
 const selectorFunc = (state: RootState) => state.UpComingMoviesReducer
 
@@ -26,12 +26,12 @@ const UpComingMoviesCategoryList = (props: UpComingMoviesCategoryListProps) => {
         dispatch(getUpComingMovies())
     }, [dispatch])
 
-    const applyPagination = useCallback(() => !pagePaginate && moreData && dispatch(paginateUpComingMovies()), [pagePaginate, moreData])
-    const applyRefresh = useCallback(() => !pageLoading && dispatch(refreshUpComingMovies()), [pageRefresh])
+    const applyPagination = () => !pagePaginate && moreData && dispatch(paginateUpComingMovies())
 
-    const renderFooter = () => {
-        return pagePaginate ? <Spinner /> : <View />
-    }
+    const applyRefresh = () => !pageLoading && dispatch(refreshUpComingMovies())
+
+    const renderFooter = () => pagePaginate ? <Spinner /> : <View />
+    const renderEmptyPage = () => pageError ? <EmptyPage onReload={getUpComingMovies} /> : null
 
 
     return (
@@ -44,15 +44,17 @@ const UpComingMoviesCategoryList = (props: UpComingMoviesCategoryListProps) => {
                         keyExtractor={(_, index) => index.toString()}
                         renderItem={({ item }) => <MovieCard item={item} componentId={componentId} />}
                         contentContainerStyle={{ paddingHorizontal: scale(7) }}
-                        maxToRenderPerBatch={10}
+                        initialNumToRender={20}
+                        removeClippedSubviews={true}
+                        bounces={false}
+                        legacyImplementation={false}
                         refreshing={pageRefresh}
                         onRefresh={applyRefresh}
                         showsVerticalScrollIndicator={false}
                         onEndReachedThreshold={0.1}
                         onEndReached={applyPagination}
-                        ListEmptyComponent={() => pageError ? <EmptyPage onReload={getUpComingMovies} /> : null}
-                        ListFooterComponent={() => renderFooter()}
-                    />
+                        ListEmptyComponent={renderEmptyPage}
+                        ListFooterComponent={renderFooter} />
             }
         </View>
     )

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { FlatList, StyleSheet, View, Dimensions } from 'react-native'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import EmptyPage from '../../../components/EmptyPage'
@@ -14,7 +14,8 @@ interface TopRatedMoviesListComponentProps {
     componentId: string
 }
 
-const WIDTH = Dimensions.get('window').width;
+const WIDTH = Dimensions.get('screen').width;
+
 const selectorFunc = (state: RootState) => state.TopRatedMoviesReducer
 
 const TopRatedMoviesListComponent = (props: TopRatedMoviesListComponentProps) => {
@@ -26,12 +27,11 @@ const TopRatedMoviesListComponent = (props: TopRatedMoviesListComponentProps) =>
         dispatch(getTopRatedMovies())
     }, [dispatch])
 
-    const applyPagination = useCallback(() => !pagePaginate && moreData && dispatch(paginateTopRatedMovies()), [pagePaginate, moreData])
-    const applyRefresh = useCallback(() => !pageLoading && dispatch(refreshTopRatedMovies()), [pageRefresh])
+    const applyPagination = () => !pagePaginate && moreData && dispatch(paginateTopRatedMovies())
+    const applyRefresh = () => !pageLoading && dispatch(refreshTopRatedMovies())
 
-    const renderFooter = () => {
-        return pagePaginate ? <Spinner /> : <View />
-    }
+    const renderFooter = () => pagePaginate ? <Spinner /> : null
+    const renderEmptyPage = () => pageError ? <EmptyPage onReload={getTopRatedMovies} /> : null
 
     return (
         <View style={styles.listContainer}>
@@ -43,14 +43,17 @@ const TopRatedMoviesListComponent = (props: TopRatedMoviesListComponentProps) =>
                         keyExtractor={(_, index) => index.toString()}
                         renderItem={({ item }) => <MovieCard item={item} componentId={componentId} />}
                         contentContainerStyle={{ paddingHorizontal: scale(7) }}
-                        maxToRenderPerBatch={10}
+                        initialNumToRender={20}
+                        removeClippedSubviews={true}
+                        bounces={false}
+                        legacyImplementation={false}
                         refreshing={pageRefresh}
                         onRefresh={applyRefresh}
                         showsVerticalScrollIndicator={false}
                         onEndReachedThreshold={0.1}
                         onEndReached={applyPagination}
-                        ListEmptyComponent={() => pageError ? <EmptyPage onReload={getTopRatedMovies} /> : null}
-                        ListFooterComponent={() => renderFooter()} />
+                        ListEmptyComponent={renderEmptyPage}
+                        ListFooterComponent={renderFooter} />
             }
         </View>
     )
