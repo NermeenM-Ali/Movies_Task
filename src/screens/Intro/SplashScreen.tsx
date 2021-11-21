@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, Image, StyleSheet, Text, View } from 'react-native'
 import { Navigation } from 'react-native-navigation'
 import NetInfo from "@react-native-community/netinfo";
 import { useDispatch } from 'react-redux'
@@ -7,7 +7,7 @@ import colors from '../../assets/colors'
 import fonts from '../../assets/fonts'
 import strings from '../../assets/strings'
 import { AppStackScreens } from '../../navigation/ScreenEnums'
-import { moderateScale, verticalScale } from '../../utils/Scaling'
+import { moderateScale, scale, verticalScale } from '../../utils/Scaling'
 import { checkConnectionStatus } from '../../redux/actions/InternetConnectionAction';
 
 interface SplachScreenProps {
@@ -34,8 +34,8 @@ const SplashScreen = (props: SplachScreenProps) => {
 
     return (
         <View style={styles.container}>
+            <Image source={require('../../assets/imgs/Logo.png')} style={styles.logoImg} resizeMode='contain' />
             <Text style={styles.appNameText}>{strings.appName}</Text>
-            <ActivityIndicator size='small' color={colors.GRAY_COLOR} style={styles.loader} />
         </View>
     )
 }
@@ -50,11 +50,13 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     appNameText: {
-        fontSize: moderateScale(50),
+        fontSize: moderateScale(45),
         color: colors.BLACK_COLOR,
-        fontFamily: fonts.SEMI_BOLD_FONT
+        fontFamily: fonts.SEMI_BOLD_FONT,
+        marginTop: verticalScale(25),
     },
-    loader: {
-        marginTop: verticalScale(40)
+    logoImg: {
+        width: scale(400),
+        height: verticalScale(200),
     }
 })
