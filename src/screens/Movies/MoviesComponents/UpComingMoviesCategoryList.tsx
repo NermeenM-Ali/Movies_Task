@@ -45,7 +45,6 @@ const UpComingMoviesCategoryList = (props: UpComingMoviesCategoryListProps) => {
                         renderItem={({ item }) => <MovieCard item={item} componentId={componentId} />}
                         contentContainerStyle={{ paddingHorizontal: scale(7) }}
                         initialNumToRender={20}
-                        removeClippedSubviews={true}
                         bounces={false}
                         legacyImplementation={false}
                         refreshing={pageRefresh}
