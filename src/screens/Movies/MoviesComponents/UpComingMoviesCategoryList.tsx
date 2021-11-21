@@ -45,8 +45,6 @@ const UpComingMoviesCategoryList = (props: UpComingMoviesCategoryListProps) => {
                         renderItem={({ item }) => <MovieCard item={item} componentId={componentId} />}
                         contentContainerStyle={{ paddingHorizontal: scale(7) }}
                         initialNumToRender={20}
-                        bounces={false}
-                        legacyImplementation={false}
                         refreshing={pageRefresh}
                         onRefresh={applyRefresh}
                         showsVerticalScrollIndicator={false}
